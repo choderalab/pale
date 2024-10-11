@@ -1,4 +1,4 @@
-mvp-ale
+The PALE: The Protein Alchemical Landscape Explorer
 ==============================
 [//]: # (Badges)
 [![GitHub Actions Build Status](https://github.com/REPLACE_WITH_OWNER_ACCOUNT/mvp_ale/workflows/CI/badge.svg)](https://github.com/REPLACE_WITH_OWNER_ACCOUNT/mvp_ale/actions?query=workflow%3ACI)
