@@ -17,7 +17,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
-import mvp_ale
+import pale
 
 
 # -- Project information -----------------------------------------------------
@@ -120,7 +120,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'mvp_aledoc'
+htmlhelp_basename = 'paledoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -147,8 +147,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'mvp_ale.tex', 'mvp-ale Documentation',
-     'mvp_ale', 'manual'),
+    (master_doc, 'pale.tex', 'mvp-ale Documentation',
+     'pale', 'manual'),
 ]
 
 
@@ -157,7 +157,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'mvp_ale', 'mvp-ale Documentation',
+    (master_doc, 'pale', 'mvp-ale Documentation',
      [author], 1)
 ]
 
@@ -168,8 +168,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'mvp_ale', 'mvp-ale Documentation',
-     author, 'mvp_ale', 'Mutational Variability and Protein Alchemical Landscape Explorer',
+    (master_doc, 'pale', 'mvp-ale Documentation',
+     author, 'pale', 'Mutational Variability and Protein Alchemical Landscape Explorer',
      'Miscellaneous'),
 ]
 
