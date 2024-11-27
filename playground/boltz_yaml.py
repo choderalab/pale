@@ -1,10 +1,9 @@
 """
-Script to predict protein-ligand complex structures using boltz.
+Script to help predicting protein-ligand complex structures using boltz.
 
-It takes data from a PDB and SDF files for protein and ligands, respectively.
-
-The purpose is to programatically build a YAML file that boltz can use to
-make predictions.
+The purpose is to programmatically build a YAML file that boltz can use to
+make predictions. It takes data from a PDB and SDF files for protein and
+ligands, respectively.
 
 Meant to be used as a tool to help sanity-checking boltz.
 """
