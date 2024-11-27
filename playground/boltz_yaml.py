@@ -1,5 +1,5 @@
 """
-Script to predict tyk2 complex structures using boltz.
+Script to predict protein-ligand complex structures using boltz.
 
 It takes data from a PDB and SDF files for protein and ligands, respectively.
 
