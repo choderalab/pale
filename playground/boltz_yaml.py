@@ -1,17 +1,12 @@
 """
 Script to predict tyk2 complex structures using boltz.
 
-It takes data from a local copy of the protein ligand benchmark repository
-hosted in https://github.com/openforcefield/protein-ligand-benchmark
+It takes data from a PDB and SDF files for protein and ligands, respectively.
 
 The purpose is to programatically build a YAML file that boltz can use to
-make predictions from.
+make predictions.
 
-Meant to be used as a sanity check for boltz.
-
-TODOs:
- * Make basic CLI that accepts paths to pdb/sdf files.
- * Actually generate the YAML file.
+Meant to be used as a tool to help sanity-checking boltz.
 """
 
 import argparse
