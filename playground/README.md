@@ -11,5 +11,8 @@ structure that we want to achieve in this project.
 used with `boltz` to make structure predictions. For example you can run it using:
 
 ```python
-python boltz_tyk2_prediction.py --protein-file protein.pdb --ligand-file ligands.sdf --protein-id MYPROTEIN --output-yaml MYPROTEIN_ligands.yaml
+python boltz_yaml.py --protein-file protein.pdb --ligand-file ligands.sdf --protein-id MYPROTEIN --output-yaml MYPROTEIN_ligands.yaml
 ```
+
+This will generate a `yaml` file in the specified path (`ligand.yaml` by default), that is ready
+to be consumed by `boltz predict` command.
