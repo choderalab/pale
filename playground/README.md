@@ -16,3 +16,18 @@ python boltz_yaml.py --protein-file protein.pdb --ligand-file ligands.sdf --prot
 
 This will generate a `yaml` file in the specified path (`ligand.yaml` by default), that is ready
 to be consumed by `boltz predict` command.
+
+## Boltz-1 Examples 
+Example YAML files for multiple types of use cases is provided in the `boltz1-example-yamls` directory
+
+These can all be easily run using the command: 
+```
+boltz predict [example yaml] --cache [CACHE DIR] --use_msa_server
+```
+FYI, on our chodera lab installation, our cache dir is `/data1/choderaj/shared/.cache/boltz/`
+
+Example systems include: 
+- Monomeric sequences
+- Protein + ligand complexes
+- Protein + multiple-ligand complexes
+- Protein-protein complexes (homodimers, heterodimer, heterooligomers)
