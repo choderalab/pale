@@ -23,11 +23,11 @@ def sequence_from_pdb(pdb_path: str):
     fixer = PDBFixer(pdb_path)
 
     # Get single-letter sequence from pdbfixer object
-    sequence_obj = fixer.sequences[0]  # get first sequence in fixer obj
+    # Traverse all chains -- raise warnings if hit with unknown residue code
     sequence = []
-    for residue in sequence_obj.residues:
+    for residue in fixer.topology.residues():
         try:
-            sequence.append(protein_letters_3to1[residue.title()])
+            sequence.append(protein_letters_3to1[residue.name.title()])
         except KeyError:  # It should only fail with caps
             print(f"Residue {residue} conversion failed. Continuing.")
             continue
