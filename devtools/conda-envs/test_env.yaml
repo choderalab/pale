@@ -1,11 +1,17 @@
 name: test
 channels:
-
-  - defaults
+  - conda-forge
 dependencies:
     # Base depends
   - python
   - pip
+  - numpy
+  - openff-units
+  - openmm
+  - openmmforcefields >=0.14.1
+  - openmmtools >=0.23.0
+  - pymbar ~=3.0
+  - pydantic >=1.10.17
 
     # Testing
   - pytest
@@ -13,6 +19,14 @@ dependencies:
   - codecov
 
     # Pip-only installs
-  #- pip:
+  - pip:
+      - "git+https://github.com/OpenFreeEnergy/feflow.git@protein-mutation-setup"
+      - "git+https://github.com/OpenFreeEnergy/openfe.git@protein-mutation-support"
+      - "git+https://github.com/OpenFreeEnergy/gufe.git"
+  # Dependencies for openfe/gufe branches (temporary)
+  - threadpoolctl
+  - lomap2 ~=3.0
+  - kartograf
+  - openff-models
   #  - codecov
 
