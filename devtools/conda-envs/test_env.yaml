@@ -28,5 +28,6 @@ dependencies:
   - lomap2 ~=3.0
   - kartograf
   - openff-models
+  - msgpack-python  # For gufe
   #  - codecov
 
