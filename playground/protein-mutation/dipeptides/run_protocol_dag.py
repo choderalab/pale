@@ -121,7 +121,9 @@ final_aa = aa_one_to_three_code[final_aa]
 protocol_dag_path = f"./{protocol_dags_dir}/NEq_cycling_{initial_aa}_to_{final_aa}.json"
 protocol_dag_deserialized = NonEquilibriumCyclingProtocol.from_json(protocol_dag_path)
 # Execute dag
+# TODO: Make the results_path part of the CLI args
 results_path = pathlib.Path("./results_capped")
 results_path.mkdir(exist_ok=True)
 print(f"Executing protocol dag for {initial_aa} to {final_aa} mutation.")
-execute_DAG(protocol_dag_deserialized, keep_shared=True, shared_basedir=results_path, scratch_basedir=results_path)
+protocol_result_dag = execute_DAG(protocol_dag_deserialized, keep_shared=True, shared_basedir=results_path, scratch_basedir=results_path)
+protocol_result_dag.to_json(f"./{results_path}/results_NEq_cycling_{initial_aa}_to_{final_aa}.json")

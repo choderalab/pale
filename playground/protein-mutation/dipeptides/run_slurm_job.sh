@@ -18,7 +18,7 @@ source ${HOME}/.bashrc
 OPENMM_CPU_THREADS=1
 
 # Activate environment
-conda activate feflow-openfe-env
+conda activate pale-env
 
 # Report node in use
 hostname

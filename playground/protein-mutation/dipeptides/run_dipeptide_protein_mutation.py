@@ -124,6 +124,10 @@ for mutation_spec in mutations_to_perform:
     # changing default settings as needed
     settings.integrator_settings.equilibrium_steps = 375000
     settings.integrator_settings.nonequilibrium_steps = 375000
+    settings.alchemical_settings.explicit_charge_correction = True
+    # Better charge method with Openeye
+    settings.partial_charge_settings.partial_charge_method = "am1bccelf10"
+    settings.partial_charge_settings.off_toolkit_backend = "openeye"
 
     # Define protocol/simulation
     protocols_rootdir = "./protocol_dags_capped"
