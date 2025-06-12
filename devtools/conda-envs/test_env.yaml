@@ -7,7 +7,7 @@ dependencies:
   - pip
   - numpy
   - openff-units
-  - openmm
+  - openmm ==8.1.2
   - openmmforcefields >=0.14.1
   - openmmtools >=0.23.0
   - pymbar ~=3.0
