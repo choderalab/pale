@@ -22,8 +22,8 @@ python boltz_yaml.py --protein-file protein.pdb --ligand-file ligands.sdf --prot
 This will generate a `yaml` file in the specified path (`ligand.yaml` by default), that is ready
 to be consumed by `boltz predict` command.
 
-## Boltz-1 Examples 
-Example YAML files for multiple types of use cases is provided in the `boltz1-example-yamls` directory
+## Boltz-1/2 Examples 
+Example YAML files for multiple types of use cases is provided in the `boltz-example-yamls` directory
 
 These can all be easily run using the command: 
 ```

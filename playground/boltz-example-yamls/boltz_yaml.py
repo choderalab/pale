@@ -9,6 +9,7 @@ Meant to be used as a tool to help sanity-checking boltz.
 """
 
 import argparse
+from pathlib import Path
 import yaml
 from Bio.Data.IUPACData import protein_letters_3to1
 from pdbfixer import PDBFixer
@@ -58,24 +59,27 @@ def generate_boltz_yaml(protein_sequence: list, ligands_data: dict, protein_id: 
     Note: The resulting YAML files are intended for use with the remote MSA server's capabilities.
     That is, --use_msa_server flag for boltz.
     """
-    yaml_dict = {"version": 1, "sequences": []}  # initialize obj to populate
-    # Populate protein sequence
-    yaml_dict["sequences"].append(
-        {"protein": {"id": protein_id, "sequence": "".join(protein_sequence)}})
-    # Populate ligands smiles
+    out_path = Path(output_yaml)
     for ligand_id, ligand_smiles in ligands_data.items():
+        yaml_dict = {"version": 1, "sequences": [], "properties": []}  # initialize obj to populate
+        # Populate protein sequence
+        yaml_dict["sequences"].append(
+            {"protein": {"id": protein_id, "sequence": "".join(protein_sequence)}})
         yaml_dict["sequences"].append({"ligand": {"id": ligand_id, "smiles": ligand_smiles}})
-    # Dump data in yaml file
-    with open(output_yaml, "w") as out_file:
-        yaml.dump(yaml_dict, out_file)
+        # Populate affinity data (boltz-2) -- Only one ligand is supported boooo!!
+        yaml_dict["properties"].append({"affinity": {"binder": ligand_id}})
+        # Dump data in yaml file -- One yaml file per ligand (changed with boltz-2)
+        with open(f"{out_path.parent / out_path.stem}_lig{ligand_id}{out_path.suffix}", "w") as out_file:
+            yaml.dump(yaml_dict, out_file)
+
 
 
 def arg_parser():
     parser = argparse.ArgumentParser(
         description="CLI to write YAML files for boltz protein-ligand predictions.")
     parser.add_argument("--protein-file", type=str, help="Path to protein PDB file.")
-    parser.add_argument("--ligand-file", type=str, help="Path to liband SDF file.")
-    parser.add_argument("--protein-id", type=str, help="Protein name/id.", default="protein")
+    parser.add_argument("--ligand-file", type=str, help="Path to ligand(s) SDF file.")
+    parser.add_argument("--protein-id", type=str, help="Protein name/id.", default="A")
     parser.add_argument("--output-yaml", type=str, help="Path to yaml output.",
                         default="ligand.yaml")
     return parser
