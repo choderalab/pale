@@ -26,6 +26,7 @@ import logging
 import os
 import sys
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 from typing import Dict, List, Optional, Tuple, Any
 import yaml
 import warnings
@@ -279,25 +280,103 @@ class ProteinMutationPlanner:
         return wt_system, mut_system
 
     def _create_mutant_protein(self, protein: ProteinComponent,
-                               mutation_info: Dict[str, Any]) -> ProteinComponent:
-        """Create mutant protein from wild-type."""
+                               mutation_info: Dict[str, Any],
+                               add_missing: bool = False) -> List[ProteinComponent]:
+        """
+        Create mutant proteins by applying point mutations to a wild-type protein.
 
-        # This is a simplified implementation
-        # In practice, this would use proper protein mutation tools
-        logger.info("Creating mutant protein...")
+        This method processes each mutation specified in the mutation_info dictionary,
+        creating a separate mutant protein for each one. The mutations are applied
+        using PDBFixer, which can also optionally add missing residues and atoms.
+
+        Parameters
+        ----------
+        protein : ProteinComponent
+            The wild-type protein structure to mutate.
+        mutation_info : dict
+            Dictionary containing mutation specifications with the following structure:
+
+            - mutations : list of dict
+                List of mutation dictionaries, each containing:
+
+                - from_residue : str
+                    Single-letter amino acid code of original residue (e.g., 'A')
+                - position : int
+                    Residue position number in the protein sequence
+                - to_residue : str
+                    Single-letter amino acid code of target residue (e.g., 'V')
+                - chain : str
+                    Chain identifier (e.g., 'A')
+        add_missing : bool, optional
+            If True, adds missing residues and atoms to the wild-type protein
+            before applying mutations. Missing atoms and hydrogens are always
+            added to the mutant regardless of this setting. Default is False.
+
+        Returns
+        -------
+        list of ProteinComponent
+            List of mutant protein objects, one for each mutation applied.
+            The order matches the order of mutations in mutation_info['mutations'].
+
+        Notes
+        -----
+        - Each mutation is applied to the original wild-type protein independently
+        - Temporary PDB files are created during processing but cleaned up automatically
+        - Hydrogens are added at pH 7.0 after mutation application
+        - The method logs progress information for each mutation being applied
+
+        Examples
+        --------
+        >>> mutation_info = {
+        ...     'mutations': [
+        ...         {'from_residue': 'A', 'position': 123, 'to_residue': 'V', 'chain': 'A'},
+        ...         {'from_residue': 'L', 'position': 456, 'to_residue': 'P', 'chain': 'B'}
+        ...     ]
+        ... }
+        >>> mutants = self._create_mutant_protein(wild_type_protein, mutation_info)
+        >>> len(mutants)  # Returns 2, one for each mutation
+        2
+        """
+        from pdbfixer import PDBFixer
+        from openmm.app import PDBFile
+
+        mutated_proteins = []  # we will append ProteinComponents to this list
+
+        logger.info("Creating mutant proteins...")
 
         for mutation in mutation_info['mutations']:
             logger.info(
-                f"Applying mutation: {mutation['from_residue']}{mutation['position']}{mutation['to_residue']}")
+                f"Applying mutation: {mutation['from_residue']}{mutation['position']}{mutation['to_residue']} in chain {mutation['chain']}")
+            # Store pdb structure of wild-type protein, needed for pdbfixer
+            # TODO: We probably want to avoid having to pass through pdb files (or any file)
+            temp_f = NamedTemporaryFile(delete=False, suffix=".pdb")
+            protein.to_pdb_file(temp_f.name)
+            # Parse the protein structure -- Add missing residues/atoms if specified
+            pdbfixer = PDBFixer(temp_f.name)
+            if add_missing:
+                pdbfixer.findMissingResidues()
+                pdbfixer.findMissingAtoms()
+                pdbfixer.addMissingAtoms()
+                pdbfixer.addMissingHydrogens(7.0)
+            # Parse mutation string to pdbfixer format
+            mutation_spec = f"{mutation['from_residue']}-{mutation['position']}-{mutation['to_residue']}"
+            # Apply the mutation
+            pdbfixer.applyMutations([mutation_spec], mutation["chain"])
+            pdbfixer.findMissingResidues()
+            pdbfixer.findMissingAtoms()
+            pdbfixer.addMissingAtoms()
+            pdbfixer.addMissingHydrogens(7.0)
+            # Save resulting mutation to PDB using openmm
+            temp_out_f = NamedTemporaryFile(delete=False, suffix=".pdb")
+            omm_top = pdbfixer.topology
+            omm_pos = pdbfixer.positions
+            with open(temp_out_f, "w") as out_file:
+                PDBFile.writeFile(omm_top, omm_pos, out_file)
+            # Create ProteinComponent and add it to list
+            mut_protein = ProteinComponent.from_pdb_file(temp_out_f.name)
+            mutated_proteins.append(mut_protein)
 
-        # For now, return the original protein
-        # In a real implementation, this would:
-        # 1. Parse the protein structure
-        # 2. Identify the residues to mutate
-        # 3. Apply the mutations
-        # 4. Return the mutated protein
-
-        return protein
+        return mutated_proteins
 
     def _create_protein_transformation(self, wt_system: ChemicalSystem,
                                        mut_system: ChemicalSystem,
