@@ -18,7 +18,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 # Declare any run-time dependencies that should be installed with the package.
 #dependencies = [
 #    "importlib-resources;python_version<'3.10'",
@@ -82,3 +82,11 @@ default-tag = "1.0.0"
 
 [tool.versioningit.write]
 file = "pale/_version.py"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true

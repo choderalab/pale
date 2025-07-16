@@ -10,10 +10,14 @@ from gufe.protocols import execute_DAG
 
 # Basic CLI
 parser = argparse.ArgumentParser(description="Run protocol dag given index")
-parser.add_argument("--protocol-dags-dir", type=str,
-                    help="base directory where serialized protocol dags are located")
+parser.add_argument(
+    "--protocol-dags-dir",
+    type=str,
+    help="base directory where serialized protocol dags are located",
+)
 
 args = parser.parse_args()
+
 
 def parse_mutation_spec(mutation_spec: str):
     """
@@ -49,7 +53,7 @@ def parse_mutation_spec(mutation_spec: str):
         If the mutation_spec does not match the expected pattern.
     """
     mutation_string = mutation_spec.upper()
-    pattern = r'([A-Z]{1,3})(\d+)([A-Z]{1,3})'
+    pattern = r"([A-Z]{1,3})(\d+)([A-Z]{1,3})"
     match = re.search(pattern, mutation_string)
     if match:
         initial_aa, res_number, final_aa = match.groups()
@@ -68,5 +72,10 @@ protocol_dag_deserialized = NonEquilibriumCyclingProtocol.from_json(protocol_dag
 results_path = pathlib.Path("./results_capped")
 results_path.mkdir(exist_ok=True)
 print(f"Executing protocol dag.")
-protocol_result_dag = execute_DAG(protocol_dag_deserialized, keep_shared=True, shared_basedir=results_path, scratch_basedir=results_path)
+protocol_result_dag = execute_DAG(
+    protocol_dag_deserialized,
+    keep_shared=True,
+    shared_basedir=results_path,
+    scratch_basedir=results_path,
+)
 protocol_result_dag.to_json(f"./{results_path}/results_NEq_cycling_dimer_P61R.json")
