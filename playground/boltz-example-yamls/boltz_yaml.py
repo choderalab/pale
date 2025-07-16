@@ -46,12 +46,16 @@ def ligands_data_from_sdf(sdf_file: str):
     """
     # Get smiles for ligands
     ligands = Molecule.from_file(sdf_file)
-    smiles_data = {str(mol_index): molecule.to_smiles(explicit_hydrogens=False) for
-                   mol_index, molecule in enumerate(ligands)}
+    smiles_data = {
+        str(mol_index): molecule.to_smiles(explicit_hydrogens=False)
+        for mol_index, molecule in enumerate(ligands)
+    }
     return smiles_data
 
 
-def generate_boltz_yaml(protein_sequence: list, ligands_data: dict, protein_id: str, output_yaml: str):
+def generate_boltz_yaml(
+    protein_sequence: list, ligands_data: dict, protein_id: str, output_yaml: str
+):
     """
     Writes a YAML file that can be used by boltz, from protein sequence and ligands data
     information.
@@ -64,24 +68,28 @@ def generate_boltz_yaml(protein_sequence: list, ligands_data: dict, protein_id: 
         yaml_dict = {"version": 1, "sequences": [], "properties": []}  # initialize obj to populate
         # Populate protein sequence
         yaml_dict["sequences"].append(
-            {"protein": {"id": protein_id, "sequence": "".join(protein_sequence)}})
+            {"protein": {"id": protein_id, "sequence": "".join(protein_sequence)}}
+        )
         yaml_dict["sequences"].append({"ligand": {"id": ligand_id, "smiles": ligand_smiles}})
         # Populate affinity data (boltz-2) -- Only one ligand is supported boooo!!
         yaml_dict["properties"].append({"affinity": {"binder": ligand_id}})
         # Dump data in yaml file -- One yaml file per ligand (changed with boltz-2)
-        with open(f"{out_path.parent / out_path.stem}_lig{ligand_id}{out_path.suffix}", "w") as out_file:
+        with open(
+            f"{out_path.parent / out_path.stem}_lig{ligand_id}{out_path.suffix}", "w"
+        ) as out_file:
             yaml.dump(yaml_dict, out_file)
-
 
 
 def arg_parser():
     parser = argparse.ArgumentParser(
-        description="CLI to write YAML files for boltz protein-ligand predictions.")
+        description="CLI to write YAML files for boltz protein-ligand predictions."
+    )
     parser.add_argument("--protein-file", type=str, help="Path to protein PDB file.")
     parser.add_argument("--ligand-file", type=str, help="Path to ligand(s) SDF file.")
     parser.add_argument("--protein-id", type=str, help="Protein name/id.", default="A")
-    parser.add_argument("--output-yaml", type=str, help="Path to yaml output.",
-                        default="ligand.yaml")
+    parser.add_argument(
+        "--output-yaml", type=str, help="Path to yaml output.", default="ligand.yaml"
+    )
     return parser
 
 
