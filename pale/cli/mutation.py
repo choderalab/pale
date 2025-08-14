@@ -31,11 +31,12 @@ from typing import Dict, List, Optional, Tuple, Any
 import yaml
 import warnings
 
+from feflow.protocols import NonEquilibriumCyclingProtocol
+
 # OpenFE imports (these would be the actual imports in the real implementation)
 try:
     import openfe
     from openfe import SmallMoleculeComponent, ProteinComponent, SolventComponent
-    from openfe.protocols import RelativeHybridTopologyProtocol
     from openfe.setup import ChemicalSystem, Transformation
     from openfe.utils import AtomMapping, LigandAtomMapper
     from openfe import AlchemicalNetwork
@@ -411,8 +412,9 @@ class ProteinMutationPlanner:
         """Create transformation between wild-type and mutant systems."""
 
         # Default protocol settings
+        # TODO: This should probably be a setting obj/model
         default_settings = {
-            "protocol": "RelativeHybridTopologyProtocol",
+            "protocol": "NonEquilibriumCyclingProtocol",
             "lambda_schedule": [0.0, 0.25, 0.5, 0.75, 1.0],
             "simulation_time": "5.0 ns",
             "equilibration_time": "1.0 ns",
@@ -422,7 +424,7 @@ class ProteinMutationPlanner:
             default_settings.update(settings)
 
         # Create protocol
-        protocol = RelativeHybridTopologyProtocol(settings=default_settings)
+        protocol = NonEquilibriumCyclingProtocol(settings=default_settings)
 
         # Create atom mapping (simplified)
         # In practice, this would use sophisticated protein atom mapping
