@@ -1,7 +1,5 @@
 """Mutational Variability and Protein Alchemical Landscape Explorer"""
 
-# Add imports here
-from .pale import *
+from importlib.metadata import version
 
-
-from ._version import __version__
+__version__ = version("pale")
