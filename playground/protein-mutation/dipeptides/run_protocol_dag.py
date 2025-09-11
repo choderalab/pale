@@ -10,34 +10,39 @@ from gufe.protocols import execute_DAG
 
 # Basic CLI
 parser = argparse.ArgumentParser(description="Run protocol dag given index")
-parser.add_argument("--protocol-dags-dir", type=str,
-                    help="base directory where serialized protocol dags are located")
+parser.add_argument(
+    "--protocol-dags-dir",
+    type=str,
+    help="base directory where serialized protocol dags are located",
+)
 parser.add_argument("--index", type=int, help="index of protocol dag to file")
 
 args = parser.parse_args()
 
 # Helper objects/functions
 # Mutation specification
-mutations_to_perform = ['Y2F',
-                        'Y2A',
-                        'W2F',
-                        'T2A',
-                        'E2A',
-                        'D2A',
-                        'K2A',
-                        'R2A',
-                        'R2Q',
-                        'H2A',
-                        'F2Y',
-                        'A2Y',
-                        'F2W',
-                        'A2T',
-                        'A2E',
-                        'A2D',
-                        'A2K',
-                        'A2R',
-                        'Q2R',
-                        'A2H']
+mutations_to_perform = [
+    "Y2F",
+    "Y2A",
+    "W2F",
+    "T2A",
+    "E2A",
+    "D2A",
+    "K2A",
+    "R2A",
+    "R2Q",
+    "H2A",
+    "F2Y",
+    "A2Y",
+    "F2W",
+    "A2T",
+    "A2E",
+    "A2D",
+    "A2K",
+    "A2R",
+    "Q2R",
+    "A2H",
+]
 
 # Create dictionary for AA code translation
 aa_three_to_one_code = {
@@ -60,9 +65,10 @@ aa_three_to_one_code = {
     "CYS": "C",
     "MET": "M",
     "ASN": "N",
-    "GLN": "Q"
+    "GLN": "Q",
 }
 aa_one_to_three_code = {value: key for key, value in aa_three_to_one_code.items()}
+
 
 def parse_mutation_spec(mutation_spec: str):
     """
@@ -98,7 +104,7 @@ def parse_mutation_spec(mutation_spec: str):
         If the mutation_spec does not match the expected pattern.
     """
     mutation_string = mutation_spec.upper()
-    pattern = r'([A-Z]{1,3})(\d+)([A-Z]{1,3})'
+    pattern = r"([A-Z]{1,3})(\d+)([A-Z]{1,3})"
     match = re.search(pattern, mutation_string)
     if match:
         initial_aa, res_number, final_aa = match.groups()
@@ -125,5 +131,10 @@ protocol_dag_deserialized = NonEquilibriumCyclingProtocol.from_json(protocol_dag
 results_path = pathlib.Path("./results_capped")
 results_path.mkdir(exist_ok=True)
 print(f"Executing protocol dag for {initial_aa} to {final_aa} mutation.")
-protocol_result_dag = execute_DAG(protocol_dag_deserialized, keep_shared=True, shared_basedir=results_path, scratch_basedir=results_path)
+protocol_result_dag = execute_DAG(
+    protocol_dag_deserialized,
+    keep_shared=True,
+    shared_basedir=results_path,
+    scratch_basedir=results_path,
+)
 protocol_result_dag.to_json(f"./{results_path}/results_NEq_cycling_{initial_aa}_to_{final_aa}.json")
